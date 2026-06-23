@@ -1,0 +1,450 @@
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:transparent}
+.shell{display:flex;height:100vh;min-height:600px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;background:var(--color-background-primary)}
+.sidebar{width:240px;min-width:240px;background:var(--color-background-secondary);border-right:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-header{padding:16px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.sidebar-title{font-size:13px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.05em}
+.sidebar-subtitle{font-size:11px;color:var(--color-text-tertiary);margin-top:3px}
+.toc{flex:1;overflow-y:auto;padding:8px 0}
+.toc-section{margin-bottom:4px}
+.toc-group{font-size:10px;font-weight:500;color:var(--color-text-tertiary);padding:8px 16px 4px;text-transform:uppercase;letter-spacing:0.06em}
+.toc-item{display:flex;align-items:center;gap:8px;padding:6px 16px;cursor:pointer;font-size:13px;color:var(--color-text-secondary);border-left:2px solid transparent;transition:all .15s}
+.toc-item:hover{background:var(--color-background-primary);color:var(--color-text-primary)}
+.toc-item.active{background:var(--color-background-primary);color:#185FA5;border-left-color:#185FA5;font-weight:500}
+.toc-item i{font-size:14px;min-width:16px}
+.main{flex:1;overflow-y:auto;padding:0}
+.content-area{max-width:720px;padding:32px 36px}
+.section{margin-bottom:56px;scroll-margin-top:24px}
+.section-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;margin-bottom:12px}
+.badge-arch{background:#E6F1FB;color:#185FA5}
+.badge-dbt{background:#EAF3DE;color:#3B6D11}
+.badge-sf{background:#EEEDFE;color:#534AB7}
+.badge-adv{background:#E1F5EE;color:#0F6E56}
+.badge-perf{background:#FAEEDA;color:#854F0B}
+.section-title{font-size:22px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px}
+.section-divider{height:0.5px;background:var(--color-border-tertiary);margin-bottom:24px}
+h3{font-size:16px;font-weight:500;color:var(--color-text-primary);margin:24px 0 8px}
+p{font-size:15px;color:var(--color-text-secondary);line-height:1.7;margin-bottom:12px}
+.callout{border-radius:var(--border-radius-md);padding:14px 16px;margin:16px 0;border-left:3px solid}
+.callout-blue{background:#E6F1FB;border-color:#378ADD}
+.callout-blue p,.callout-blue li{color:#0C447C}
+.callout-green{background:#EAF3DE;border-color:#639922}
+.callout-green p,.callout-green li{color:#27500A}
+.callout-purple{background:#EEEDFE;border-color:#7F77DD}
+.callout-purple p,.callout-purple li{color:#3C3489}
+.callout-amber{background:#FAEEDA;border-color:#EF9F27}
+.callout-amber p,.callout-amber li{color:#633806}
+.callout-teal{background:#E1F5EE;border-color:#1D9E75}
+.callout-teal p,.callout-teal li{color:#085041}
+.callout-label{font-size:11px;font-weight:500;letter-spacing:0.05em;margin-bottom:6px;text-transform:uppercase}
+.kv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.kv-card{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px 14px}
+.kv-label{font-size:11px;color:var(--color-text-tertiary);margin-bottom:4px}
+.kv-value{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.layer-flow{display:flex;flex-direction:column;gap:0;margin:16px 0}
+.layer-row{display:flex;align-items:stretch;gap:0}
+.layer-box{flex:1;border:0.5px solid var(--color-border-tertiary);padding:10px 14px;background:var(--color-background-primary)}
+.layer-box:first-child{border-radius:var(--border-radius-md) var(--border-radius-md) 0 0}
+.layer-box:last-child{border-radius:0 0 var(--border-radius-md) var(--border-radius-md)}
+.layer-box+.layer-box{border-top:none}
+.layer-name{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.layer-desc{font-size:12px;color:var(--color-text-secondary);margin-top:2px}
+.layer-tools{font-size:11px;color:#185FA5;margin-top:4px}
+.arrow-down{text-align:center;color:var(--color-text-tertiary);font-size:16px;line-height:1.2}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:16px 0}
+th{background:var(--color-background-secondary);padding:8px 12px;text-align:left;font-weight:500;font-size:12px;color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary)}
+td{padding:8px 12px;border:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary)}
+tr:nth-child(even) td{background:var(--color-background-secondary)}
+code{font-family:var(--font-mono);font-size:13px;background:var(--color-background-secondary);padding:2px 6px;border-radius:4px;color:#3C3489}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500;margin-right:4px;margin-bottom:4px}
+.tag-blue{background:#E6F1FB;color:#0C447C}
+.tag-green{background:#EAF3DE;color:#27500A}
+.tag-purple{background:#EEEDFE;color:#3C3489}
+.tag-amber{background:#FAEEDA;color:#633806}
+.quiz-btn{display:inline-block;padding:8px 16px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13px;color:var(--color-text-secondary);cursor:pointer;background:transparent;margin-top:12px}
+.quiz-btn:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.mindmap-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.mm-group{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px 14px}
+.mm-group-title{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.mm-item{font-size:12px;color:var(--color-text-secondary);padding:2px 0 2px 12px;border-left:2px solid var(--color-border-tertiary);margin-bottom:3px}
+.progress-bar{height:3px;background:var(--color-background-secondary);border-radius:2px;margin-top:8px}
+.progress-fill{height:3px;background:#185FA5;border-radius:2px;transition:width .3s}
+</style>
+
+<div class="shell">
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">Modern Data Stack</div>
+    <div class="sidebar-subtitle">Snowflake &amp; dbt Revision</div>
+    <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+  </div>
+  <div class="toc" id="toc">
+    <div class="toc-section">
+      <div class="toc-group">Foundations</div>
+      <div class="toc-item active" onclick="go('etl')" id="nav-etl"><i class="ti ti-arrows-exchange" aria-hidden="true"></i>ETL vs ELT</div>
+      <div class="toc-item" onclick="go('raw')" id="nav-raw"><i class="ti ti-database" aria-hidden="true"></i>Raw data value</div>
+      <div class="toc-item" onclick="go('stack')" id="nav-stack"><i class="ti ti-layers" aria-hidden="true"></i>Modern data stack</div>
+    </div>
+    <div class="toc-section">
+      <div class="toc-group">dbt</div>
+      <div class="toc-item" onclick="go('dbt-why')" id="nav-dbt-why"><i class="ti ti-code" aria-hidden="true"></i>Why dbt?</div>
+      <div class="toc-item" onclick="go('dbt-layers')" id="nav-dbt-layers"><i class="ti ti-stack-2" aria-hidden="true"></i>dbt layers</div>
+      <div class="toc-item" onclick="go('grain')" id="nav-grain"><i class="ti ti-table" aria-hidden="true"></i>Grain vs metric</div>
+    </div>
+    <div class="toc-section">
+      <div class="toc-group">Snowflake</div>
+      <div class="toc-item" onclick="go('sf-arch')" id="nav-sf-arch"><i class="ti ti-building" aria-hidden="true"></i>Architecture</div>
+      <div class="toc-item" onclick="go('sf-stage')" id="nav-sf-stage"><i class="ti ti-box" aria-hidden="true"></i>Stages &amp; loading</div>
+      <div class="toc-item" onclick="go('sf-time')" id="nav-sf-time"><i class="ti ti-clock-history" aria-hidden="true"></i>Time travel</div>
+      <div class="toc-item" onclick="go('sf-clone')" id="nav-sf-clone"><i class="ti ti-copy" aria-hidden="true"></i>Zero-copy cloning</div>
+      <div class="toc-item" onclick="go('sf-semi')" id="nav-sf-semi"><i class="ti ti-braces" aria-hidden="true"></i>Semi-structured data</div>
+      <div class="toc-item" onclick="go('sf-perf')" id="nav-sf-perf"><i class="ti ti-bolt" aria-hidden="true"></i>Performance</div>
+    </div>
+    <div class="toc-section">
+      <div class="toc-group">Review</div>
+      <div class="toc-item" onclick="go('mindmap')" id="nav-mindmap"><i class="ti ti-brain" aria-hidden="true"></i>Mind map</div>
+      <div class="toc-item" onclick="go('interview')" id="nav-interview"><i class="ti ti-message-question" aria-hidden="true"></i>Interview Q&amp;A</div>
+    </div>
+  </div>
+</nav>
+
+<main class="main" id="main">
+<div class="content-area">
+
+<section class="section" id="etl">
+  <div class="section-badge badge-arch"><i class="ti ti-arrows-exchange" style="font-size:12px" aria-hidden="true"></i>Foundations</div>
+  <h2 class="section-title">ETL vs ELT</h2>
+  <div class="section-divider"></div>
+  <h3>How traditional ETL worked</h3>
+  <p>Traditional ETL followed a strict sequence: <strong>Extract → Transform → Load</strong>. Data was cleaned and reshaped <em>before</em> it ever entered the warehouse. This made sense when storage was expensive and compute was limited — you only stored what you absolutely needed in its final form.</p>
+  <div class="callout callout-amber">
+    <div class="callout-label">The old pipeline</div>
+    <p style="font-family:var(--font-mono);font-size:13px">Source → [Transform on separate server] → Warehouse (clean data only)</p>
+  </div>
+  <h3>Why ETL evolved into ELT</h3>
+  <p>Cloud data warehouses like Snowflake, BigQuery, and Redshift changed the economics. Storage became cheap and compute became massively scalable. So the transformation step moved <em>inside</em> the warehouse itself.</p>
+  <div class="kv-grid">
+    <div class="kv-card"><div class="kv-label">Old (ETL)</div><div class="kv-value">Transform before load</div></div>
+    <div class="kv-card"><div class="kv-label">New (ELT)</div><div class="kv-value">Load raw, transform inside warehouse</div></div>
+    <div class="kv-card"><div class="kv-label">Who transforms?</div><div class="kv-value">Separate ETL server</div></div>
+    <div class="kv-card"><div class="kv-label">Who transforms?</div><div class="kv-value">The warehouse itself (dbt)</div></div>
+  </div>
+  <div class="callout callout-blue">
+    <div class="callout-label">Key insight</div>
+    <p>ELT pipelines are simpler to build, easier to debug, and far more flexible — because you always have the original data to re-transform from.</p>
+  </div>
+</section>
+
+<section class="section" id="raw">
+  <div class="section-badge badge-arch"><i class="ti ti-database" style="font-size:12px" aria-hidden="true"></i>Foundations</div>
+  <h2 class="section-title">Why raw data is valuable</h2>
+  <div class="section-divider"></div>
+  <p>Raw data serves as the permanent source of truth. When business definitions change, transformations fail, or new requirements emerge — you can rebuild all downstream models from the original data without needing to re-extract from source systems.</p>
+  <div class="callout callout-green">
+    <div class="callout-label">Biggest advantage</div>
+    <p>If a transformation has a bug, or Finance changes the revenue definition, you can fix the dbt model and <strong>re-run</strong>. No need to go back to the source. The raw data is already there.</p>
+  </div>
+  <h3>What happens without raw data?</h3>
+  <p>If you only stored transformed data and a business rule changes, you'd need to re-extract from the source — which might be slow, rate-limited, or no longer available in the same form.</p>
+</section>
+
+<section class="section" id="stack">
+  <div class="section-badge badge-arch"><i class="ti ti-layers" style="font-size:12px" aria-hidden="true"></i>Foundations</div>
+  <h2 class="section-title">The modern data stack</h2>
+  <div class="section-divider"></div>
+  <p>A modern company has data spread across many systems — Shopify, Salesforce, Google Analytics, Facebook Ads, ERPs, CRMs. The modern data stack centralizes everything through five core layers.</p>
+  <div class="layer-flow">
+    <div class="layer-box"><div class="layer-name">1 · Ingestion layer</div><div class="layer-desc">Pull raw data from all source systems into the warehouse</div><div class="layer-tools">Airbyte · Fivetran · Stitch · Matillion</div></div>
+    <div class="arrow-down">↓</div>
+    <div class="layer-box"><div class="layer-name">2 · Cloud warehouse</div><div class="layer-desc">Store and process all raw data centrally</div><div class="layer-tools">Snowflake · BigQuery · Redshift</div></div>
+    <div class="arrow-down">↓</div>
+    <div class="layer-box"><div class="layer-name">3 · Transformation layer</div><div class="layer-desc">Clean, model, and apply business logic (raw → staging → mart)</div><div class="layer-tools">dbt — software engineering + SQL</div></div>
+    <div class="arrow-down">↓</div>
+    <div class="layer-box"><div class="layer-name">4 · Orchestration layer</div><div class="layer-desc">Schedule and run everything automatically (pipeline creation)</div><div class="layer-tools">Airflow · Dagster · Prefect · dbt Cloud jobs</div></div>
+    <div class="arrow-down">↓</div>
+    <div class="layer-box"><div class="layer-name">5 · BI layer</div><div class="layer-desc">Visualize and report for business users</div><div class="layer-tools">Power BI · Tableau · Looker</div></div>
+  </div>
+  <div class="callout callout-purple" style="margin-top:20px">
+    <div class="callout-label">Key distinction</div>
+    <p><code>dbt</code> = <strong>WHAT</strong> to run &nbsp;·&nbsp; <code>Airflow</code> = <strong>WHEN</strong> to run</p>
+  </div>
+</section>
+
+<section class="section" id="dbt-why">
+  <div class="section-badge badge-dbt"><i class="ti ti-code" style="font-size:12px" aria-hidden="true"></i>dbt</div>
+  <h2 class="section-title">Why business logic shouldn't live in Power BI</h2>
+  <div class="section-divider"></div>
+  <p>When revenue calculations are duplicated across three dashboards, you get three different answers the moment Finance changes the definition. That's chaos.</p>
+  <div class="callout callout-amber">
+    <div class="callout-label">The problem scenario</div>
+    <p>Sales Dashboard, Finance Dashboard, and Marketing Dashboard each compute revenue independently. Finance updates the formula → 3 dashboards need updating → risk of inconsistency → analysts lose trust in data.</p>
+  </div>
+  <div class="kv-grid">
+    <div class="kv-card">
+      <div class="kv-label">Traditional analyst thinking</div>
+      <div class="kv-value" style="font-size:13px;margin-top:4px">"How do I build this dashboard?"</div>
+    </div>
+    <div class="kv-card">
+      <div class="kv-label">Analytics engineer thinking</div>
+      <div class="kv-value" style="font-size:13px;margin-top:4px">"How do I create a trusted dataset that powers ALL dashboards?"</div>
+    </div>
+  </div>
+  <div class="callout callout-green">
+    <div class="callout-label">The solution</div>
+    <p>Business logic lives in <code>dbt</code> as a single source of truth. All dashboards pull from the same <code>fct_orders</code> or <code>dim_customers</code> model. Update once → everywhere is consistent.</p>
+  </div>
+  <p>dbt is also more than just SQL files. It provides <strong>testing, documentation, lineage tracking, and version control</strong> — making data transformations as robust as software engineering.</p>
+</section>
+
+<section class="section" id="dbt-layers">
+  <div class="section-badge badge-dbt"><i class="ti ti-stack-2" style="font-size:12px" aria-hidden="true"></i>dbt</div>
+  <h2 class="section-title">dbt data layers</h2>
+  <div class="section-divider"></div>
+  <p>Each layer has a distinct responsibility. Separating them improves maintainability, testability, and scalability.</p>
+  <table>
+    <thead><tr><th>Layer</th><th>Prefix</th><th>Responsibility</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag tag-blue">Raw</span></td><td><code>raw_</code></td><td>Source data, unchanged</td><td><code>raw_orders</code></td></tr>
+      <tr><td><span class="tag tag-purple">Staging</span></td><td><code>stg_</code></td><td>Cleaned, standardized, renamed</td><td><code>stg_orders</code></td></tr>
+      <tr><td><span class="tag tag-amber">Intermediate</span></td><td><code>int_</code></td><td>Joined/enriched, not yet mart-ready</td><td><code>int_customer_orders</code></td></tr>
+      <tr><td><span class="tag tag-green">Mart</span></td><td><code>fct_ / dim_</code></td><td>Business-ready for reporting</td><td><code>fct_orders</code>, <code>dim_customers</code></td></tr>
+    </tbody>
+  </table>
+  <div class="callout callout-blue">
+    <div class="callout-label">Interview-quality answer</div>
+    <p>Each layer has a different responsibility. RAW stores source data unchanged, STAGING standardizes and cleans data, and MARTS contain business-ready models for reporting. Separating layers improves maintainability, testing, debugging, and scalability.</p>
+  </div>
+  <h3>The full flow (Blinkit example)</h3>
+  <p>Sources: Orders, Payments, Drivers, Customers, App Events, Marketing Campaigns → ingested raw → dbt stages and models → Power BI dashboards for Revenue, Retention, and Drivers.</p>
+</section>
+
+<section class="section" id="grain">
+  <div class="section-badge badge-dbt"><i class="ti ti-table" style="font-size:12px" aria-hidden="true"></i>dbt</div>
+  <h2 class="section-title">Grain vs metric</h2>
+  <div class="section-divider"></div>
+  <div class="callout callout-purple">
+    <div class="callout-label">Core concept</div>
+    <p><strong>Grain ≠ Metric.</strong> Grain answers: "What does one row represent?" A metric is a calculation on top of that.</p>
+  </div>
+  <table>
+    <thead><tr><th>order_id</th><th>customer_id</th><th>amount</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>101</td><td>500</td></tr>
+      <tr><td>2</td><td>102</td><td>700</td></tr>
+    </tbody>
+  </table>
+  <p>Each row = one order. Therefore: <strong>Grain = One Order.</strong></p>
+  <div class="callout callout-green">
+    <div class="callout-label">Interview answer</div>
+    <p>"The grain of <code>FCT_ORDERS</code> is one row per order."</p>
+  </div>
+</section>
+
+<section class="section" id="sf-arch">
+  <div class="section-badge badge-sf"><i class="ti ti-building" style="font-size:12px" aria-hidden="true"></i>Snowflake</div>
+  <h2 class="section-title">Snowflake architecture</h2>
+  <div class="section-divider"></div>
+  <p>Snowflake uses a <strong>multi-cluster shared-data architecture</strong> with three distinct layers that can scale independently.</p>
+  <div class="layer-flow">
+    <div class="layer-box" style="background:#EEEDFE;border-color:#AFA9EC"><div class="layer-name" style="color:#26215C">Cloud services (the brain)</div><div class="layer-desc" style="color:#534AB7">Query parsing, optimization, metadata, access control — runs continuously</div></div>
+    <div class="arrow-down">↓</div>
+    <div class="layer-box" style="background:#E6F1FB;border-color:#85B7EB"><div class="layer-name" style="color:#042C53">Virtual warehouses (compute)</div><div class="layer-desc" style="color:#185FA5">Independent clusters per team (Finance, Marketing, Analytics) — runs only when executing queries</div></div>
+    <div class="arrow-down">↓</div>
+    <div class="layer-box" style="background:#E1F5EE;border-color:#5DCAA5"><div class="layer-name" style="color:#04342C">Storage layer</div><div class="layer-desc" style="color:#0F6E56">Centralized, compressed, columnar storage — always on (Orders, Customers, Products, Payments)</div></div>
+  </div>
+  <h3>Why separate storage and compute?</h3>
+  <p>An e-commerce company might store 10TB of data 24/7, but employees only run reports from 9 to 6. In a traditional database, storage and compute are tied together — you pay for both even at 2 AM when nobody is querying.</p>
+  <div class="callout callout-teal">
+    <div class="callout-label">Snowflake's cost advantage</div>
+    <p>With Snowflake, you get storage + on-demand compute. Store data all month, but pay for compute only when queries actually run — a huge cost saving.</p>
+  </div>
+  <div class="callout callout-blue">
+    <div class="callout-label">One-minute interview answer</div>
+    <p>Snowflake uses a multi-cluster shared-data architecture with three layers: Storage, Compute, and Cloud Services. Data is stored centrally while compute is provided by independent virtual warehouses. This allows organizations to scale storage and compute independently, avoid resource contention between teams, and pay only when compute is actually needed.</p>
+  </div>
+</section>
+
+<section class="section" id="sf-stage">
+  <div class="section-badge badge-sf"><i class="ti ti-box" style="font-size:12px" aria-hidden="true"></i>Snowflake</div>
+  <h2 class="section-title">Stages &amp; data loading</h2>
+  <div class="section-divider"></div>
+  <p>A <strong>Stage</strong> is a temporary holding location for data files before they are loaded into Snowflake tables.</p>
+  <div class="kv-grid">
+    <div class="kv-card"><div class="kv-label">Internal stage</div><div class="kv-value" style="font-size:13px">Managed by Snowflake itself</div></div>
+    <div class="kv-card"><div class="kv-label">External stage</div><div class="kv-value" style="font-size:13px">S3, Azure Blob Storage, or GCS</div></div>
+  </div>
+  <div class="callout callout-purple">
+    <div class="callout-label">Loading command</div>
+    <p>Data is loaded from a stage into tables using the <code>COPY INTO</code> command.</p>
+  </div>
+  <p>Stages decouple ingestion from the warehouse — files can be staged and validated before being permanently loaded.</p>
+</section>
+
+<section class="section" id="sf-time">
+  <div class="section-badge badge-sf"><i class="ti ti-clock-history" style="font-size:12px" aria-hidden="true"></i>Snowflake</div>
+  <h2 class="section-title">Time travel &amp; Fail-safe</h2>
+  <div class="section-divider"></div>
+  <h3>Time travel</h3>
+  <p>Time Travel lets you access historical versions of data and recover dropped or modified objects within a configured retention period. You can query past data using <code>AT</code> or <code>BEFORE</code> clauses, and recover objects using <code>UNDROP</code>.</p>
+  <h3>Fail-safe</h3>
+  <p>Fail-safe is a Snowflake-managed disaster recovery mechanism. Unlike Time Travel, users cannot directly access or query Fail-safe data — it exists purely as a backend safety net managed by Snowflake.</p>
+  <table>
+    <thead><tr><th>Feature</th><th>Time Travel</th><th>Fail-safe</th></tr></thead>
+    <tbody>
+      <tr><td>Who controls it?</td><td>User</td><td>Snowflake only</td></tr>
+      <tr><td>Queryable?</td><td>Yes (AT / BEFORE)</td><td>No</td></tr>
+      <tr><td>Recover objects?</td><td>Yes (UNDROP)</td><td>Snowflake support only</td></tr>
+      <tr><td>Purpose</td><td>Undo mistakes, audit</td><td>Disaster recovery</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="section" id="sf-clone">
+  <div class="section-badge badge-sf"><i class="ti ti-copy" style="font-size:12px" aria-hidden="true"></i>Snowflake</div>
+  <h2 class="section-title">Zero-copy cloning</h2>
+  <div class="section-divider"></div>
+  <p>Zero-Copy Cloning lets you clone databases, schemas, and tables <strong>instantly</strong> — without physically copying the underlying data. Storage is only consumed when changes are made to the cloned object.</p>
+  <div class="callout callout-teal">
+    <div class="callout-label">How it works</div>
+    <p>The clone shares the same underlying micro-partitions as the source. Only when you write new data or update existing data does additional storage get consumed — making cloning essentially free until you diverge.</p>
+  </div>
+  <h3>When to use it</h3>
+  <span class="tag tag-blue">Development environments</span>
+  <span class="tag tag-green">Testing new dbt models</span>
+  <span class="tag tag-purple">Safe experimentation</span>
+  <span class="tag tag-amber">Backup before migrations</span>
+</section>
+
+<section class="section" id="sf-semi">
+  <div class="section-badge badge-sf"><i class="ti ti-braces" style="font-size:12px" aria-hidden="true"></i>Snowflake</div>
+  <h2 class="section-title">Semi-structured data</h2>
+  <div class="section-divider"></div>
+  <h3>VARIANT</h3>
+  <p>VARIANT is Snowflake's semi-structured data type. It can store JSON, arrays, and objects — allowing Snowflake to work directly with semi-structured data without requiring a fixed schema upfront.</p>
+  <div class="callout callout-purple">
+    <div class="callout-label">Example use case</div>
+    <p>App event logs often arrive as JSON blobs. Store them in a VARIANT column, then use dbt to extract and normalize only the fields you need into structured tables.</p>
+  </div>
+  <h3>FLATTEN</h3>
+  <p>FLATTEN converts JSON arrays into relational rows, making nested data easier to query and analyze. Each array element becomes its own row.</p>
+  <h3>QUALIFY</h3>
+  <p>QUALIFY filters the results of window functions — similar to how <code>HAVING</code> filters aggregates. It lets you write window function conditions without a subquery.</p>
+  <div class="callout callout-amber">
+    <div class="callout-label">Should you expose VARIANT columns directly to Power BI?</div>
+    <p>No. Analytics Engineers first extract and normalize the required fields into structured tables that are easier to query, test, document, and model. Power BI always consumes structured, dbt-modelled data.</p>
+  </div>
+</section>
+
+<section class="section" id="sf-perf">
+  <div class="section-badge badge-perf"><i class="ti ti-bolt" style="font-size:12px" aria-hidden="true"></i>Performance</div>
+  <h2 class="section-title">Micro-partitions &amp; clustering</h2>
+  <div class="section-divider"></div>
+  <h3>Micro-partitions</h3>
+  <p>A micro-partition is Snowflake's internal storage unit. Snowflake automatically organizes data into micro-partitions and stores metadata (minimum and maximum values, row counts, statistics) about each partition.</p>
+  <div class="kv-grid">
+    <div class="kv-card"><div class="kv-label">Each micro-partition stores</div><div class="kv-value" style="font-size:13px">Rows + Metadata + Statistics</div></div>
+    <div class="kv-card"><div class="kv-label">Size range</div><div class="kv-value" style="font-size:13px">50–500 MB compressed</div></div>
+  </div>
+  <h3>Partition pruning</h3>
+  <p>Partition pruning is the process of <strong>skipping micro-partitions</strong> that cannot satisfy a query predicate. Instead of scanning the whole table, Snowflake reads only relevant partitions — dramatically reducing data scanned and improving performance.</p>
+  <h3>Clustering keys</h3>
+  <p>For very large tables that are frequently filtered on specific columns (e.g., <code>ORDER_DATE</code> or <code>REGION</code>), you can define clustering keys. These help Snowflake maintain better micro-partition organization, improving partition pruning effectiveness.</p>
+  <div class="callout callout-amber">
+    <div class="callout-label">When to use clustering keys</div>
+    <p>Only for very large tables (&gt;1TB) that are frequently filtered on specific high-cardinality columns. Clustering keys have a maintenance cost — don't use them by default.</p>
+  </div>
+</section>
+
+<section class="section" id="mindmap">
+  <div class="section-badge badge-sf"><i class="ti ti-brain" style="font-size:12px" aria-hidden="true"></i>Review</div>
+  <h2 class="section-title">Snowflake mind map</h2>
+  <div class="section-divider"></div>
+  <div class="mindmap-grid">
+    <div class="mm-group">
+      <div class="mm-group-title"><i class="ti ti-building" style="font-size:14px;color:#185FA5" aria-hidden="true"></i>Architecture</div>
+      <div class="mm-item">Storage layer</div>
+      <div class="mm-item">Compute layer (virtual warehouses)</div>
+      <div class="mm-item">Cloud services (brain)</div>
+      <div class="mm-item">Sizing · Scaling · Auto-suspend</div>
+    </div>
+    <div class="mm-group">
+      <div class="mm-group-title"><i class="ti ti-database" style="font-size:14px;color:#3B6D11" aria-hidden="true"></i>Objects</div>
+      <div class="mm-item">Databases → Schemas → Tables</div>
+      <div class="mm-item">Stages (internal / external)</div>
+      <div class="mm-item">COPY INTO command</div>
+    </div>
+    <div class="mm-group">
+      <div class="mm-group-title"><i class="ti ti-clock-history" style="font-size:14px;color:#534AB7" aria-hidden="true"></i>Data protection</div>
+      <div class="mm-item">Time Travel (AT / BEFORE)</div>
+      <div class="mm-item">UNDROP</div>
+      <div class="mm-item">Fail-safe (Snowflake-managed)</div>
+      <div class="mm-item">Zero-Copy Cloning</div>
+    </div>
+    <div class="mm-group">
+      <div class="mm-group-title"><i class="ti ti-braces" style="font-size:14px;color:#854F0B" aria-hidden="true"></i>Semi-structured</div>
+      <div class="mm-item">VARIANT type</div>
+      <div class="mm-item">FLATTEN (arrays → rows)</div>
+      <div class="mm-item">QUALIFY (window filter)</div>
+    </div>
+    <div class="mm-group">
+      <div class="mm-group-title"><i class="ti ti-bolt" style="font-size:14px;color:#BA7517" aria-hidden="true"></i>Performance</div>
+      <div class="mm-item">Micro-partitions</div>
+      <div class="mm-item">Partition pruning</div>
+      <div class="mm-item">Clustering keys</div>
+    </div>
+    <div class="mm-group">
+      <div class="mm-group-title"><i class="ti ti-coin" style="font-size:14px;color:#0F6E56" aria-hidden="true"></i>Cost &amp; access</div>
+      <div class="mm-item">Credits (compute billing)</div>
+      <div class="mm-item">Storage vs compute separation</div>
+      <div class="mm-item">Roles &amp; access control (RBAC)</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="interview">
+  <div class="section-badge badge-adv"><i class="ti ti-message-question" style="font-size:12px" aria-hidden="true"></i>Review</div>
+  <h2 class="section-title">Interview Q&amp;A</h2>
+  <div class="section-divider"></div>
+  <h3>Quick-fire answers</h3>
+  <table>
+    <thead><tr><th>Question</th><th>Answer</th></tr></thead>
+    <tbody>
+      <tr><td>Why did ETL evolve into ELT?</td><td>Cloud warehouses became powerful enough to transform data themselves, making separate transform servers unnecessary.</td></tr>
+      <tr><td>Why is raw data valuable?</td><td>It's a permanent source of truth — you can re-transform from it if business rules change.</td></tr>
+      <tr><td>dbt vs Airflow?</td><td>dbt = WHAT to run; Airflow = WHEN to run.</td></tr>
+      <tr><td>What is a Stage?</td><td>A temporary file location (internal or external) used with COPY INTO to load data into Snowflake tables.</td></tr>
+      <tr><td>Time Travel vs Fail-safe?</td><td>Time Travel is user-accessible (AT/BEFORE/UNDROP); Fail-safe is Snowflake-managed disaster recovery, not user-accessible.</td></tr>
+      <tr><td>What is Zero-Copy Cloning?</td><td>Instant clone of a table/schema/DB without copying data. Storage only increases when cloned data is modified.</td></tr>
+      <tr><td>What is VARIANT?</td><td>Snowflake's semi-structured type that stores JSON, arrays, and objects.</td></tr>
+      <tr><td>What does FLATTEN do?</td><td>Converts JSON arrays into relational rows for easier analysis.</td></tr>
+      <tr><td>What does QUALIFY do?</td><td>Filters window function results — like HAVING but for window functions.</td></tr>
+      <tr><td>What is partition pruning?</td><td>Skipping micro-partitions that can't satisfy a query predicate — reduces data scanned, improves speed.</td></tr>
+      <tr><td>Why separate storage and compute?</td><td>Pay for storage 24/7 but compute only when queries run — massive cost saving for workloads that don't query all the time.</td></tr>
+      <tr><td>What is the grain of FCT_ORDERS?</td><td>One row per order.</td></tr>
+    </tbody>
+  </table>
+  <button class="quiz-btn" onclick="sendPrompt('Quiz me on Snowflake and dbt concepts from my revision notes — ask me questions one at a time and tell me if my answer is correct.')">Quiz me on these topics ↗</button>
+</section>
+
+</div>
+</main>
+</div>
+
+<script>
+const sections=['etl','raw','stack','dbt-why','dbt-layers','grain','sf-arch','sf-stage','sf-time','sf-clone','sf-semi','sf-perf','mindmap','interview'];
+function go(id){
+  document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});
+  sections.forEach(s=>{const n=document.getElementById('nav-'+s);if(n)n.classList.remove('active')});
+  const n=document.getElementById('nav-'+id);if(n)n.classList.add('active');
+}
+const main=document.getElementById('main');
+main.addEventListener('scroll',()=>{
+  const st=main.scrollTop;const sh=main.scrollHeight-main.clientHeight;
+  document.getElementById('prog').style.width=Math.round(st/sh*100)+'%';
+  let cur=sections[0];
+  sections.forEach(id=>{const el=document.getElementById(id);if(el&&el.offsetTop-60<=st)cur=id});
+  sections.forEach(s=>{const n=document.getElementById('nav-'+s);if(n)n.classList.remove('active')});
+  const n=document.getElementById('nav-'+cur);if(n)n.classList.add('active');
+},{ passive:true });
+</script>
